@@ -107,7 +107,7 @@ type
     y*: blst_fp
     z*: blst_fp
 
-  blst_p1_affine* {.byref.} = object
+  blst_p1_affine* {.blst, byref.} = object
     x*: blst_fp
     y*: blst_fp
 
@@ -116,7 +116,7 @@ type
     y*: blst_fp2
     z*: blst_fp2
 
-  blst_p2_affine* {.byref.} = object
+  blst_p2_affine* {.blst, byref.} = object
     x*: blst_fp2
     y*: blst_fp2
 
@@ -125,7 +125,7 @@ type
     e1: blst_p1
     e2: blst_p2
 
-  blst_pairing* = object
+  blst_pairing* {.byref.} = object
     # "blst_pairing" in header is defined as
     # an empty struct. This forces usage on the heap
     # through pointer.
@@ -259,6 +259,9 @@ proc blst_p1_affine_is_equal*(a: blst_p1_affine; b: blst_p1_affine): CTbool
 proc blst_p1_affine_is_inf*(a: blst_p1_affine): CTbool
 proc blst_p1_generator*(): ptr blst_p1
 
+# Bulk addition G1 - TODO ptr ptr UncheckedArray[blst_p1_affine]
+proc blst_p1s_add*(sum: var blst_p1, points: ptr ptr blst_p1_affine, npoints: int)
+
 # BLS12-381-specific G2 operations.
 proc blst_p2_add*(dst: var blst_p2; a: blst_p2; b: blst_p2)
 proc blst_p2_add_or_double*(dst: var blst_p2; a: blst_p2; b: blst_p2)
@@ -278,6 +281,9 @@ proc blst_p2_affine_in_g2*(p: blst_p2_affine): CTbool
 proc blst_p2_affine_is_equal*(a: blst_p2_affine; b: blst_p2_affine): CTbool
 proc blst_p2_affine_is_inf*(a: blst_p2_affine): CTbool
 proc blst_p2_generator*(): ptr blst_p2
+
+# Bulk addition G2 - TODO ptr ptr UncheckedArray[blst_p2_affine]
+proc blst_p2s_add*(sum: var blst_p2, points: ptr ptr blst_p2_affine, npoints: int)
 
 # Hash-to-curve operations.
 proc blst_map_to_g1*(dst: var blst_p1; u: blst_fp; v: blst_fp)

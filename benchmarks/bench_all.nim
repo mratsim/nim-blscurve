@@ -15,6 +15,18 @@ separator()
 
 # Pairings
 when BLS_BACKEND == BLST:
+  benchEcBulkAddG1(10, 10)
+  benchEcBulkAddG2(10, 10)
+  benchEcBulkAddG1(100, 10)
+  benchEcBulkAddG2(100, 10)
+  benchEcBulkAddG1(1000, 10)
+  benchEcBulkAddG2(1000, 10)
+  benchEcBulkAddG1(10000, 10)
+  benchEcBulkAddG2(10000, 10)
+  benchEcBulkAddG1(100000, 10)
+  benchEcBulkAddG2(100000, 10)
+  benchEcBulkAddG1(1000000, 10)
+  benchEcBulkAddG2(1000000, 10)
   benchBLSTPairing(1000)
 else:
   benchMiraclPairingViaDoublePairing(1000)
