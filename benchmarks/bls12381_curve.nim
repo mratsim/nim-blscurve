@@ -115,6 +115,30 @@ proc benchECAddG2*(iters: int) =
 
 when BLS_BACKEND == BLST:
 
+  proc benchECbulkAddG1*(numPoints, iters: int) =
+    var ps = newSeq[blst_p1_affine](numPoints)
+    for i in 0 ..< ps.len:
+      # Fill with generator, BLST handles doubling without branching
+      ps[i] = BLS12_381_G1
+    
+    var r{.noInit.}: blst_p1
+    let ps0 = ps[0].addr
+    let ps00 = ps0.unsafeAddr # Weird API with double indirection
+    bench("EC bulk add G1 - " & $numPoints, iters):
+      r.blst_p1s_add(ps00, ps.len)
+
+  proc benchECbulkAddG2*(numPoints, iters: int) =
+    var ps = newSeq[blst_p2_affine](numPoints)
+    for i in 0 ..< ps.len:
+      # Fill with generator, BLST handles doubling without branching
+      ps[i] = BLS12_381_G2
+
+    var r{.noInit.}: blst_p2
+    let ps0 = ps[0].addr
+    let ps00 = ps0.unsafeAddr # Weird API with double indirection
+    bench("EC bulk add G2 - " & $numPoints, iters):
+      r.blst_p2s_add(ps00, ps.len)
+
   proc benchBLSTPairing*(iters: int) =
     let (pubkey, seckey) = block:
       var pk: PublicKey
@@ -239,6 +263,23 @@ when isMainModule:
   benchEcAddG2(1000)
 
   when BLS_BACKEND == BLST:
+    benchEcBulkAddG1(10, 10)
+    benchEcBulkAddG2(10, 10)
+    benchEcBulkAddG1(100, 10)
+    benchEcBulkAddG2(100, 10)
+    benchEcBulkAddG1(1000, 10)
+    benchEcBulkAddG2(1000, 10)
+    benchEcBulkAddG1(1024, 10)
+    benchEcBulkAddG2(1024, 10)
+    benchEcBulkAddG1(2048, 10)
+    benchEcBulkAddG2(2048, 10)
+    benchEcBulkAddG1(10000, 10)
+    benchEcBulkAddG2(10000, 10)
+    benchEcBulkAddG1(100000, 10)
+    benchEcBulkAddG2(100000, 10)
+    benchEcBulkAddG1(1000000, 10)
+    benchEcBulkAddG2(1000000, 10)
+
     benchBLSTPairing(5000)
   else:
     benchMiraclPairingViaDoublePairing(1000)
